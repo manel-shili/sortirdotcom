@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Lieu{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un lieu</h1>
+
+    <div class="gauche">
+        {{ include('lieu/_form.html.twig') }}
+
+        {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_ville_new') }}" class="btn">Ajouter une ville</a>
+        {% endif %}
+
+        <div>Vérifier que la localisation sur la carte correspond bien à l'adresse rentrée.</div>
+    </div>
+
+    <div class="droite">
+        <div id="map" style="height: 500px;"></div>
+    </div>
+
+    {% block stylesheets %}
+        <link rel="stylesheet"
+              href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+              integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+              crossorigin="" />
+    {% endblock %}
+    {% block javascripts %}
+        <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+                integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+                crossorigin="">
+        </script>
+    {% endblock %}
+
+    <script type="text/javascript">
+        // Initialize map
+        let map = L.map('map');
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        map.setView([{{ app.user.site.localisation.latitude }}, {{ app.user.site.localisation.longitude }}], 16);
+
+        let layerGroup = L.layerGroup();
+        layerGroup.addTo(map);
+
+        function showLieu(latitude, longitude) {
+            let adresseCoordonnees = [latitude, longitude];
+            map.setView(adresseCoordonnees, 16);
+            let icon = L.icon({
+                iconUrl: '{{ asset('assets/images/carte/marker-icon-2x.png') }}',
+                iconSize: [120, 35],
+                iconAnchor: [60, 34],
+                popupAnchor: [0, -34]
+            });
+            layerGroup.clearLayers();
+            L.marker(adresseCoordonnees, {icon: icon}).addTo(layerGroup);
+        }
+
+        function showLieuFormChange() {
+            let adresse = document.getElementById('lieu_rue').value;
+            let villeIdSelected = document.getElementById('lieu_Ville').value;
+            let ville = document.getElementById('lieu_Ville').querySelector('[value="' + villeIdSelected +'"]').innerText;
+            adresse += " " + ville;
+            // CORS security
+            let headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+            headers.append('X-Requested-With', 'XMLHttpRequest');
+            fetch("https://api-adresse.data.gouv.fr/search/?q=" + adresse,{
+                method: 'GET',
+                headers: headers
+            })
+                .then(r=>r.json())
+                .then(r=>{
+                    let coords = r.features[0].geometry.coordinates;
+                    document.getElementById("lieu_latitude").value = coords[1];
+                    document.getElementById("lieu_longitude").value = coords[0];
+                    showLieu(coords[1], coords[0]);
+
+                })
+        }
+
+        showLieu({{ app.user.site.localisation.latitude }}, {{ app.user.site.localisation.longitude }});
+
+        document.getElementById("lieu_rue").addEventListener('keyup', () =>{
+            showLieuFormChange()
+            // Redo 1 second later because of not good on update map
+            setTimeout(() => {
+                showLieuFormChange()
+            }, 1000);
+        })
+
+        document.getElementById("lieu_Ville").addEventListener('change', () =>{
+            showLieuFormChange()
+            // Redo 1 second later because of not good on update map
+            setTimeout(() => {
+                showLieuFormChange()
+            }, 1000);
+        })
+    </script>
+{% endblock %}

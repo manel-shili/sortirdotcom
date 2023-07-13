@@ -1,0 +1,11 @@
+<div class="card card_liste">
+    <div class="card-body">
+        <img src="{{ asset('assets/images/profilePhoto/' ~ utilisateur.nomPhoto) }}" alt="">
+        <h5 class="card-title">{{ utilisateur.username }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Nom : {{ utilisateur.prenom }} {{ utilisateur.nom }}</h6>
+        <div>Contact :
+            <p>{{ utilisateur.telephone }}</p>
+            <p>{{ utilisateur.courriel }}</p>
+        </div>
+    </div>
+</div>

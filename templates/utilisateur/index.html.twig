@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Listes des utilisateurs{% endblock %}
+
+{% block body %}
+
+    <h1>Listes des utilisateurs actifs</h1>
+
+    {% for utilisateur in utilisateurs %}
+        {% include 'utilisateur/utilisateurItem.html.twig' %}
+    {% endfor %}
+
+{% endblock %}

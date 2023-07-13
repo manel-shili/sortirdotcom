@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UtlisateurController!{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5">Modification de ses informations</h1>
+
+    <fieldset class="form-group border p-3">
+        {{ form_start(form) }}
+        {{ form_end(form) }}
+    </fieldset>
+
+    <a href="{{ path('app_forgot_password_request') }}" class="btn"> Réinitialiser mon mot de passe </a>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Sortie{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5">Proposer une nouvelle sortie</h1>
+
+    <fieldset class="form-group border p-3">
+        {{ include('sortie/_form.html.twig') }}
+    </fieldset>
+    <a href="{{ path('app_lieu_new') }}" class="btn">Insérer un lieu dans le système pour y faire une sortie</a>
+    <a href="{{ path('app_sortie_index') }}">Retour à la liste</a>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le courriel pour modifier le mot de passe a été envoyé{% endblock %}
+
+{% block body %}
+    <p>
+        Si l'adresse de courriel correspond à un compte, alors un courriel y a été envoyé contenant un lien pour réinitialiser votre mot de passe.
+        Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+    </p>
+    <p>Si vous ne recevez pas ce courriel, merci de vérifier dans les spams ou bien <a href="{{ path('app_forgot_password_request') }}">renvoyer un courriel</a>.</p>
+{% endblock %}

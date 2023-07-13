@@ -1,0 +1,52 @@
+body {
+    width: 70%;
+    margin: auto;
+    color: black;
+    background-color: #011f39;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    color: white;
+    font-size: 4rem;
+}
+
+article {
+    border: 2px solid gray;
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px;
+    font-size: 1.2em;
+    background-color: white;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+p {
+    text-align: justify;
+}
+
+.credit {
+    font-style: italic;
+}
+
+.content video {
+    width: 70%;
+    margin-left: 15%;
+    box-shadow: 0 0 20px #333;;
+}
+
+.commentaire {
+    font-size: 0.9em;
+    border-top: 1px solid gray;
+    padding-top: 10px;
+}
+
+.commentaire p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}

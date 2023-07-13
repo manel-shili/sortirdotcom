@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortie{% endblock %}
+
+{% block body %}
+
+    <h1 class="text-center mb-5">Sortie : {{ sortie.nom }}</h1>
+
+    <div class="gauche">
+
+        <div>
+           <H2> Organisateur : {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</H2>
+           <div>
+               <p>Publier le : {{ sortie.dateEnregistrement ? sortie.dateEnregistrement|date('d-m-Y') : 'Non publié' }}</p>
+           </div>
+           <div>
+               <p>
+                   {{ sortie.description }}
+               </p>
+           </div>
+            <div>
+
+                <H2>Informations pratiques</H2>
+                <div>
+                    <H3>Etat</H3>
+                    <p>{{ sortie.etat}}</p>
+                </div>
+                <div>
+                    <H3>Nombre maximum d'inscrits</H3>
+                    <p>{{ sortie.nbInscriptionMax }}</p>
+                </div>
+                <div>
+                    <H3>Date de fermeture de l'inscription</H3>
+                    <p>Le {{ sortie.dateFermetureInscription ? sortie.dateFermetureInscription|date('d-m-Y') : '' }}</p>
+                </div>
+                <div>
+                    <H3>Date debut sortie</H3>
+                    <p>Le {{ sortie.dateDebutSortie ? sortie.dateDebutSortie|date('d-m-Y') : '' }}</p>
+                </div>
+                <div>
+                    <H3>Duree</H3>
+                    <p>
+                        {% if sortie.duree.m != 0 %}
+                            {{ sortie.duree | date('%m mois %d\j %h\h%I') }}
+                        {% elseif sortie.duree.d != 0 %}
+                            {{ sortie.duree | date('%d\j %h\h%I') }}
+                        {% elseif sortie.duree.h != 0 %}
+                            {{ sortie.duree | date('%h\h%I') }}
+                        {%  else %}
+                            {{ sortie.duree | date('%I') }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <H2>Adresse</H2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Lieu</th>
+                    <td id="lieu">{{ sortie.adresse.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Adresse</th>
+                    <td id="adresse">
+                        {{ sortie.adresse.rue }} {{ sortie.adresse.ville.codePostal }} {{ sortie.adresse.ville.nom }}
+                        <span style="visibility: hidden;">
+                            <span id="adresse_latitude">{{ sortie.adresse.latitude }}</span>
+                            <span id="adresse_longitude">{{ sortie.adresse.longitude }}</span>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {% if app.user().id == sortie.organisateur.id %}
+            <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}" class="btn">Modifier</a>
+            {{ include('sortie/_delete_form.html.twig') }}
+        {% endif %}
+    </div>
+
+    <div class="droite">
+        <div id="map" style="height: 500px;"></div>
+        <a href="javascript:void(0);" onClick="goToAdresse()">Recentrer la carte sur l'adresse de la sortie</a>
+    </div>
+
+    {% block stylesheets %}
+        <link rel="stylesheet"
+              href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+              integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+              crossorigin="" />
+    {% endblock %}
+    {% block javascripts %}
+        <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+                integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+                crossorigin="">
+        </script>
+    {% endblock %}
+    <script type="text/javascript">
+        // Initialize map
+        let map = L.map('map');
+        map.setView([{{ sortie.adresse.latitude }}, {{ sortie.adresse.longitude }}], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        function showLieu(latitude, longitude) {
+            let adresseCoordonnees = [latitude, longitude];
+            map.flyTo(adresseCoordonnees, 16);
+            let icon = L.icon({
+                iconUrl: '{{ asset('assets/images/carte/marker-icon-2x.png') }}',
+                iconSize: [120, 35],
+                iconAnchor: [60, 34],
+                popupAnchor: [0, -34]
+            });
+            L.marker(adresseCoordonnees, {icon: icon}).addTo(map)
+                .bindPopup('{{ sortie.nom }}')
+                .openPopup();
+        }
+
+        showLieu({{ sortie.adresse.latitude }}, {{ sortie.adresse.longitude }});
+
+        function goToAdresse() {
+            showLieu(
+                document.getElementById("adresse_latitude").innerHTML,
+                document.getElementById("adresse_longitude").innerHTML
+            )
+        }
+
+    </script>
+
+    <h2>Participants ( {{ nbparticipant }} )</h2>
+    {% for utilisateur in inscrits %}
+        {% include 'utilisateur/utilisateurItem.html.twig' %}
+    {% endfor %}
+
+{% endblock %}

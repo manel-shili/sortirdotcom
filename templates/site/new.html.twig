@@ -1,0 +1,13 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}New Site{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5">Définir un lieu comme un site</h1>
+
+    <fieldset class="form-group border p-3">
+        {{ include('site/_form.html.twig') }}
+    </fieldset>
+
+    <a href="{{ path('app_site_index') }}">retour à la liste</a>
+{% endblock %}

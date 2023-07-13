@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Ajouter un membre{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5">Finaliser son inscription</h1>
+
+    <fieldset class="form-group border p-3">
+
+        <legend class="w-auto px-2">Merci de bien vouloir compléter le formulaire</legend>
+        {{ form_start(registrationUtilisateurForm) }}
+        {{ form_end(registrationUtilisateurForm) }}
+    </fieldset>
+{% endblock %}

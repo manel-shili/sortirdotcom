@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5">Réinitialiser votre mot de passe</h1>
+
+    <fieldset class="form-group border p-3">
+
+        {{ form_start(requestForm) }}
+        {{ form_row(requestForm.courriel) }}
+        <div>
+            <small>
+                Entrer votre courriel et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+            </small>
+        </div>
+
+        <button class="btn btn-primary">Envoyer le courriel</button>
+        {{ form_end(requestForm) }}
+    </fieldset>
+{% endblock %}

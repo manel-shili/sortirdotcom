@@ -1,0 +1,43 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Site index{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5" >Gérer les sites</h1>
+        <fieldset class="form-group border p-3">
+
+            <legend class="w-auto px-2"> Filtrer les sites</legend>
+
+            {{ form(form) }}
+
+        </fieldset>
+    <div class="form-groupe my-4">
+        <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for site in sites %}
+            <tr>
+                <td>{{ site.nom }}</td>
+                <td>
+                    <div class="div-actions">
+                    <a class="btn" href="{{ path('app_site_edit', {'id': site.id}) }}">Modifier </a>
+                    {{ include('site/_delete_form.html.twig') }}
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <a class="btn" href="{{ path('app_site_new') }}">Ajouter</a>
+
+{% endblock %}

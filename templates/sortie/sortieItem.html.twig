@@ -1,0 +1,54 @@
+<div class="card card_liste">
+    <div class="card-body">
+        <h5 class="card-title">{{ sortie.nom }}</h5>
+        <p>{{ sortie.description | slice (0,100) }}...</p>
+        <div class="card-subtitle mb-2 text-muted">Organisateur : {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</div>
+        <div>Info pratiques :
+            <p>
+                Le {{ sortie.dateDebutSortie ? sortie.dateDebutSortie|date('d F Y') : '' }}<br>
+                {{ sortie.dateDebutSortie ? sortie.dateDebutSortie|date('à H\\hi') : '' }}
+                durant
+                {% if sortie.duree.m != 0 %}
+                    {{ sortie.duree | date('%m mois %d\j %h\h%I') }}
+                {% elseif sortie.duree.d != 0 %}
+                    {{ sortie.duree | date('%d\j %h\h%I') }}
+                {% elseif sortie.duree.h != 0 %}
+                    {{ sortie.duree | date('%h\h%I') }}
+                {%  else %}
+                    {{ sortie.duree | date('%I') }}
+                {% endif %}
+            </p>
+            <p>
+                Lieu : {{ sortie.adresse.nom }}
+            </p>
+        </div>
+        <hr>
+        {% if sortie.estInscrit %}
+            <h6 style="color: green;" class="action_sortie_participation" data-sortie-id="{{ sortie.id }}">Je participe</h6>
+        {% else %}
+            <h6 style="color: red;" class="action_sortie_participation" data-sortie-id="{{ sortie.id }}">Je ne participe pas</h6>
+        {% endif %}
+        {% if sortie.etat == "OUVERT" or sortie.etat == "CREATION" %}
+        <a href="javascript:void(0);"><span class="action_sortie_sinscrire" data-sortie-id="{{ sortie.id }}">
+            {% if sortie.estInscrit %}
+                Se désinscrire
+            {% else %}
+                S'inscrire
+            {% endif %}
+        </span></a>
+        {% endif %}
+        <h6 class="card-subtitle mb-2 text-muted">
+            <span class="action_sortie_nb_inscrit" data-sortie-id="{{ sortie.id }}">{{ sortie.nbInscrit }}</span> / {{ sortie.nbInscriptionMax }}
+        </h6>
+        {% if sortie.etat == "OUVERT" or sortie.etat == "CREATION" %}
+            <div>Période d'inscription
+                <p>du {{ sortie.dateOuvertureInscription ? sortie.dateOuvertureInscription|date('d F Y à H\\hi') : '' }}</p>
+                <p>à {{ sortie.dateFermetureInscription ? sortie.dateFermetureInscription|date('d F Y à H\\hi') : '' }}</p>
+            </div>
+        {% else %}
+            Inscriptions fermées
+        {% endif %}
+        <hr>
+        <a href="{{ path('app_sortie_show', {'id': sortie.id}) }}">Afficher les détails</a>
+    </div>
+</div>

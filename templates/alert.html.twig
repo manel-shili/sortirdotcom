@@ -1,0 +1,15 @@
+{% for message in app.session.flashbag.get('message') %}
+    <div class="d-flex flex-row justify-content-center m-5 alert-message">
+        <span class="blink">
+            <span class="alert alert-warning">
+                {{ message }}
+            </span>
+            <img src="{{ asset('assets/images/tchouchtou.png') }}" alt="tchoutchou le petit train">
+        </span>
+    </div>
+    <script>
+        let audio = new Audio("{{ asset('assets/sounds/effects/tchoutchou.mp3') }}");
+        audio.loop = false;
+        audio.play();
+    </script>
+{% endfor %}
